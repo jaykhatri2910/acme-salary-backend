@@ -18,7 +18,8 @@
     "test:coverage": "jest --coverage",
     "migrate": "node-pg-migrate up --migrations-dir src/db/migrations",
     "migrate:down": "node-pg-migrate down --migrations-dir src/db/migrations",
-    "migrate:create": "node-pg-migrate create --migrations-dir src/db/migrations"
+    "migrate:create": "node-pg-migrate create --migrations-dir src/db/migrations",
+    "seed": "tsx src/db/seeds/run.ts"
   },
   "dependencies": {
     "dotenv": "^16.4.5",

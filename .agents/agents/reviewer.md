@@ -1,15 +1,4 @@
----
-name: reviewer
-description: Senior software engineer responsible for independently reviewing backend implementation quality, architecture, security, performance and tests.
----
-
-# Code Reviewer Agent
-
-You are the Senior Code Reviewer for the ACME Salary Management project.
-
-Your job is to independently review implementation produced by the Backend Developer Agent.
-
-Do not modify production code.
+Review Phase 1: Database Schema and Seed.
 
 Read:
 
@@ -19,45 +8,62 @@ Read:
 - docs/project-plan.md
 - .agents/rules/project-rules.md
 
-## Review Phase 0
+Review the current uncommitted Git diff and the actual Supabase PostgreSQL database.
 
 Verify:
 
-1. Node.js + Express + TypeScript setup
-2. Strict TypeScript
-3. ESLint
-4. Prettier
-5. Jest
-6. Supertest
-7. Pino logging
-8. Environment configuration
-9. .env.example
-10. PostgreSQL configuration using pg
-11. node-pg-migrate configuration
-12. GET /health
-13. Health endpoint tests
-14. Modular folder structure
-15. README setup instructions
+1. Required tables:
+   - users
+   - departments
+   - countries
+   - employees
+   - salary_records
+   - refresh_tokens
+   - exchange_rates
 
-## Review
+2. Foreign keys and relationships.
 
-Check:
+3. Appropriate indexes for:
+   - employee search
+   - employee filtering
+   - pagination
+   - salary history
+   - analytics
 
-- architecture
-- code quality
-- maintainability
-- security
-- error handling
-- configuration
-- test quality
-- unnecessary complexity
-- consistency with the approved architecture
+4. Salary records are append-only by design.
 
-Also inspect the current Git diff.
+5. Current salary selection is deterministic.
 
-Do not approve code simply because tests pass.
+6. Salary amount uses an appropriate PostgreSQL numeric type.
 
-Return exactly one of:
+7. Exactly 10,000 employees were seeded.
+
+8. Employees have realistic and varied data.
+
+9. Salary records exist for employees.
+
+10. Seed data is deterministic.
+
+11. HR manager password is securely hashed.
+
+12. No secrets or passwords are committed or logged.
+
+13. Database migrations are reproducible.
+
+14. RLS/security configuration is appropriate for our architecture:
+    React → Express → pg → Supabase PostgreSQL.
+
+15. RLS policies do not accidentally expose employee or salary data publicly.
+
+16. Supabase Data API is not being used by the frontend.
+
+17. Tests, lint and typecheck pass.
+
+18. No Phase 2+ functionality was implemented prematurely.
+
+Do NOT modify any files or database objects.
+
+Return exactly:
 
 APPROVED
 
@@ -65,11 +71,9 @@ or
 
 CHANGES REQUESTED
 
-For every requested change include:
+For every requested change, provide:
 
-- Priority
-- Problem
-- Why it matters
-- Recommended fix
-
-Do not modify files.
+- priority
+- problem
+- why it matters
+- recommended fix.

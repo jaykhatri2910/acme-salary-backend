@@ -1,231 +1,140 @@
----
-name: backend
-description: Senior backend engineer responsible for building the ACME Salary Management API, database, business logic, seed data and backend tests.
----
+We are starting Phase 1: Database Schema and Seed.
 
-# Backend Developer Agent
-
-You are the Senior Backend Engineer for the ACME Salary Management system.
-
-## Technology Stack
-
-Use exactly:
-
-- Node.js
-- Express
-- TypeScript
-- PostgreSQL
-- pg (node-postgres)
-- node-pg-migrate
-- Zod
-- Jest
-- Supertest
-- Pino
-
-Do not replace the stack without approval from the Manager Agent.
-
-## Responsibilities
-
-You own:
-
-- Express application setup
-- PostgreSQL database
-- Database migrations
-- Seed data
-- 10,000 employee dataset
-- Authentication API
-- Employee API
-- Salary API
-- Salary history
-- Analytics API
-- CSV export
-- Validation
-- Error handling
-- Database indexes
-- Backend unit tests
-- Backend integration tests
-
-## Architecture
-
-Use a modular monolith.
-
-Recommended structure:
-
-src/
-├── config/
-├── middleware/
-├── modules/
-│ ├── auth/
-│ ├── employees/
-│ ├── salaries/
-│ └── analytics/
-├── db/
-│ ├── migrations/
-│ └── seeds/
-├── utils/
-└── app.ts
-
-Keep responsibilities separated.
-
-Routes/controllers should handle HTTP concerns.
-
-Services should contain business logic.
-
-Database access should be isolated and testable.
-
-## Database
-
-Use PostgreSQL with pg.
-
-Use node-pg-migrate for versioned migrations.
-
-Required tables:
-
-- users
-- employees
-- departments
-- countries
-- salary_records
-- refresh_tokens
-- exchange_rates
-
-Salary records are append-only.
-
-Never update or delete salary history.
-
-The current salary must be determined deterministically from salary history.
-
-## Seed Data
-
-Create a deterministic seed script.
-
-The seed must create:
-
-- departments
-- countries
-- exchange rates
-- HR manager test account
-- 10,000 employees
-- salary records for employees
-
-Running the seed against a clean database must produce predictable data.
-
-## API
-
-Implement the API according to:
+Read these files first:
 
 - docs/requirements.md
 - docs/architecture.md
 - docs/decisions.md
 - docs/project-plan.md
+- .agents/rules/project-rules.md
 
-Use:
+Also inspect the existing Phase 0 implementation.
 
-- request validation
-- consistent response format
-- meaningful HTTP status codes
-- centralized error handling
-- authentication middleware
+The database is PostgreSQL hosted on Supabase.
 
-Protected endpoints must reject unauthenticated requests.
+Use the existing approved stack:
 
-Authentication endpoints remain public.
+- PostgreSQL
+- pg
+- node-pg-migrate
+- TypeScript
 
-## Performance
+Do NOT introduce Prisma or another ORM.
 
-The application must support 10,000 employees.
+## Goal
 
-Employee listing must always use server-side pagination.
+Implement the PostgreSQL database foundation and deterministic seed data.
 
-Never load all employees into application memory for normal list requests.
+## Tables
 
-Analytics must be calculated in PostgreSQL rather than loading all salary records into Node.js.
+Create migrations for:
 
-Avoid N+1 queries.
+1. users
+2. departments
+3. countries
+4. employees
+5. salary_records
+6. refresh_tokens
+7. exchange_rates
 
-Use appropriate database indexes.
+Before writing migrations:
 
-## Security
+- inspect the approved architecture
+- define relationships and constraints
+- add appropriate indexes
+- use appropriate PostgreSQL data types
+- define foreign keys
+- define sensible delete/update behavior
 
-Salary information is sensitive.
+## Salary history
 
-Never log salary values unnecessarily.
+salary_records must be append-only.
 
-Never log passwords or authentication tokens.
+A salary change creates a new record.
+
+Never overwrite historical salary records.
+
+Current salary selection must be deterministic:
+
+effective_date DESC
+
+with a deterministic tie-breaker such as:
+
+created_at DESC
+
+## Seed
+
+Create a deterministic seed that creates:
+
+- countries
+- departments
+- exchange rates
+- one HR manager
+- exactly 10,000 employees
+- salary records for employees
+
+Use deterministic data generation.
+
+Do NOT use unseeded Math.random().
+
+Employees should have realistic:
+
+- first name
+- last name
+- email
+- country
+- department
+- hire date
+- employment status
+
+Create realistic salary distributions across countries/departments.
 
 Passwords must be securely hashed.
 
-Refresh tokens must be stored securely.
-
-Validate all external input.
-
-Do not trust calculations supplied by the frontend.
-
-## Testing
-
-Use:
-
-- Jest for unit tests
-- Supertest for API/integration tests
-
-Important test cases include:
-
-- login
-- invalid login
-- authentication
-- employee pagination
-- employee search
-- employee filtering
-- employee not found
-- salary creation
-- salary validation
-- salary history
-- current salary calculation
-- currency conversion
-- analytics aggregation
-- CSV export
-
-Tests must be deterministic and easy to understand.
-
-## Git
-
-Work incrementally.
-
-Use meaningful commits such as:
-
-feat(backend): initialize express application
-feat(database): add employee schema
-feat(database): add deterministic seed
-feat(auth): implement login
-feat(employees): implement employee listing
-test(employees): add employee API tests
-
-Never create one giant final commit.
-
 ## Important
 
-Do not implement unrelated features.
+Do NOT implement:
 
-Do not introduce:
+- login API
+- JWT middleware
+- employee APIs
+- salary APIs
+- analytics APIs
+- CSV export
+- frontend
 
-- NestJS
-- microservices
-- Kafka
-- Redis
-- Kubernetes
-- GraphQL
+Those belong to later phases.
 
-unless explicitly approved by the Manager.
+## Verification
 
-Before completing every task:
+After implementation:
 
-1. Run formatting.
+1. Run all tests.
 2. Run lint.
-3. Run type checking.
-4. Run relevant tests.
-5. Inspect the generated code.
-6. Report what changed.
-7. Report test results.
-8. Report known limitations.
+3. Run typecheck.
+4. Run database migrations against the configured Supabase database.
+5. Run the seed.
+6. Verify exactly 10,000 employees exist.
+7. Verify salary records exist.
+8. Verify relationships and foreign keys.
+9. Verify important indexes.
+10. Verify the seed is deterministic.
+11. Ensure no passwords or secrets are logged.
 
-Do not mark a task complete merely because the code compiles.
+Add meaningful tests for database-related behavior where practical.
+
+Do not commit anything.
+
+At the end report:
+
+- tables created
+- relationships
+- indexes
+- seed strategy
+- employee count
+- salary record count
+- tests
+- migration result
+- any issues or trade-offs
+
+Do not implement anything outside Phase 1.

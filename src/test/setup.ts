@@ -16,6 +16,5 @@ process.env['LOG_LEVEL'] = 'silent';
 // will require this to be a real running PostgreSQL instance.
 // For unit/HTTP tests (health check) the pool is never queried, so any
 // syntactically valid URL is sufficient.
-process.env['DATABASE_URL'] = 'postgres://postgres:password@localhost:5432/acme_salary';
-process.env['TEST_DATABASE_URL'] =
-  'postgres://postgres:password@localhost:5432/acme_salary_test';
+process.env['DATABASE_URL'] = 'postgres://localhost:5432/acme_salary';
+process.env['TEST_DATABASE_URL'] = 'postgres://localhost:5432/acme_salary_test';
