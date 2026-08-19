@@ -1,6 +1,10 @@
-We are starting Phase 1: Database Schema and Seed.
+Phase 1 has been reviewed and APPROVED.
 
-Read these files first:
+The Phase 1 changes are now committed and pushed.
+
+We can start Phase 2: HR Authentication.
+
+Before implementation, read:
 
 - docs/requirements.md
 - docs/architecture.md
@@ -8,133 +12,56 @@ Read these files first:
 - docs/project-plan.md
 - .agents/rules/project-rules.md
 
-Also inspect the existing Phase 0 implementation.
+Inspect the existing Phase 0 and Phase 1 implementation.
 
-The database is PostgreSQL hosted on Supabase.
+Implement ONLY the authentication functionality defined in the approved architecture.
 
-Use the existing approved stack:
+Do not implement employee, salary, analytics, or CSV APIs yet.
 
-- PostgreSQL
-- pg
-- node-pg-migrate
-- TypeScript
+Before coding, explain the authentication flow you will implement and identify the relevant existing database tables.
 
-Do NOT introduce Prisma or another ORM.
+Then implement the approved authentication design.
 
-## Goal
+Requirements:
 
-Implement the PostgreSQL database foundation and deterministic seed data.
+- HR manager login
+- Secure password verification
+- Access token
+- Refresh token
+- Authentication middleware
+- Protected route support
+- Secure token handling
+- Input validation
+- Appropriate HTTP status codes
+- Authentication error handling
 
-## Tables
+Use the existing PostgreSQL schema and users/refresh_tokens tables.
 
-Create migrations for:
+Do not introduce an ORM or change the approved stack.
 
-1. users
-2. departments
-3. countries
-4. employees
-5. salary_records
-6. refresh_tokens
-7. exchange_rates
+Add meaningful unit and integration tests covering:
 
-Before writing migrations:
+- successful login
+- invalid email
+- invalid password
+- missing credentials
+- protected route without authentication
+- invalid/expired access token
+- refresh token flow
+- invalid/revoked refresh token
 
-- inspect the approved architecture
-- define relationships and constraints
-- add appropriate indexes
-- use appropriate PostgreSQL data types
-- define foreign keys
-- define sensible delete/update behavior
+Run:
 
-## Salary history
+- npm test
+- npm run lint
+- npm run typecheck
 
-salary_records must be append-only.
-
-A salary change creates a new record.
-
-Never overwrite historical salary records.
-
-Current salary selection must be deterministic:
-
-effective_date DESC
-
-with a deterministic tie-breaker such as:
-
-created_at DESC
-
-## Seed
-
-Create a deterministic seed that creates:
-
-- countries
-- departments
-- exchange rates
-- one HR manager
-- exactly 10,000 employees
-- salary records for employees
-
-Use deterministic data generation.
-
-Do NOT use unseeded Math.random().
-
-Employees should have realistic:
-
-- first name
-- last name
-- email
-- country
-- department
-- hire date
-- employment status
-
-Create realistic salary distributions across countries/departments.
-
-Passwords must be securely hashed.
-
-## Important
-
-Do NOT implement:
-
-- login API
-- JWT middleware
-- employee APIs
-- salary APIs
-- analytics APIs
-- CSV export
-- frontend
-
-Those belong to later phases.
-
-## Verification
-
-After implementation:
-
-1. Run all tests.
-2. Run lint.
-3. Run typecheck.
-4. Run database migrations against the configured Supabase database.
-5. Run the seed.
-6. Verify exactly 10,000 employees exist.
-7. Verify salary records exist.
-8. Verify relationships and foreign keys.
-9. Verify important indexes.
-10. Verify the seed is deterministic.
-11. Ensure no passwords or secrets are logged.
-
-Add meaningful tests for database-related behavior where practical.
-
-Do not commit anything.
+Do not commit changes.
 
 At the end report:
 
-- tables created
-- relationships
-- indexes
-- seed strategy
-- employee count
-- salary record count
+- authentication flow
+- endpoints added
+- security decisions
 - tests
-- migration result
 - any issues or trade-offs
-
-Do not implement anything outside Phase 1.

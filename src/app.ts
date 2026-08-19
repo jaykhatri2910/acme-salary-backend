@@ -1,4 +1,5 @@
 import express from 'express';
+import cookieParser from 'cookie-parser';
 import pinoHttp from 'pino-http';
 import { logger } from './config/logger';
 import { healthRouter } from './routes/index';
@@ -22,6 +23,7 @@ app.use(
 // ── Body parsing ──────────────────────────────────────────────────────────────
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
+app.use(cookieParser());
 
 // ── Routes ────────────────────────────────────────────────────────────────────
 // Health check is mounted at /health (outside /api/v1) so Render can reach it

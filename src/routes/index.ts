@@ -1,5 +1,7 @@
 import { Router } from 'express';
 import healthRouter from '../modules/health/health.router';
+import authRouter from '../modules/auth/auth.router';
+import { requireAuth } from '../middleware/auth';
 
 const router = Router();
 
@@ -8,7 +10,12 @@ const router = Router();
  * All business feature routes will be registered here under /api/v1.
  */
 
-// Placeholder — business routes (auth, employees, salaries, analytics) will be added in later phases.
+router.use('/auth', authRouter);
+
+// Temporary test route to verify auth middleware
+router.get('/test-protected', requireAuth, (req, res) => {
+  res.status(200).json({ data: { user: req.user } });
+});
 
 export { healthRouter };
 export default router;

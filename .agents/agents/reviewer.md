@@ -1,6 +1,10 @@
-Review Phase 1: Database Schema and Seed.
+Review Phase 2: HR Authentication.
 
-Read:
+You are reviewing the implementation produced by the Backend Developer Agent.
+
+Do NOT modify any files.
+
+First read:
 
 - docs/requirements.md
 - docs/architecture.md
@@ -8,62 +12,167 @@ Read:
 - docs/project-plan.md
 - .agents/rules/project-rules.md
 
-Review the current uncommitted Git diff and the actual Supabase PostgreSQL database.
+Then inspect:
 
-Verify:
+- the current Git diff
+- Phase 1 database schema
+- users table
+- refresh_tokens table
+- authentication implementation
+- tests
+- package.json
+- environment configuration
 
-1. Required tables:
-   - users
-   - departments
-   - countries
-   - employees
-   - salary_records
-   - refresh_tokens
-   - exchange_rates
+## Scope
 
-2. Foreign keys and relationships.
+Phase 2 should implement ONLY HR authentication.
 
-3. Appropriate indexes for:
-   - employee search
-   - employee filtering
-   - pagination
-   - salary history
-   - analytics
+Expected functionality:
 
-4. Salary records are append-only by design.
+1. HR manager login
+2. Secure password verification
+3. Access token generation
+4. Refresh token generation
+5. Refresh token validation/rotation according to the approved architecture
+6. Authentication middleware
+7. Protected route support
+8. Token expiration handling
+9. Refresh token revocation where required
+10. Input validation
+11. Proper HTTP status codes
+12. Authentication error handling
 
-5. Current salary selection is deterministic.
+Do NOT approve functionality outside this phase.
 
-6. Salary amount uses an appropriate PostgreSQL numeric type.
+Verify that Phase 3+ functionality has NOT been implemented, including:
 
-7. Exactly 10,000 employees were seeded.
+- employee CRUD/list APIs
+- salary APIs
+- salary history APIs
+- analytics APIs
+- CSV export
 
-8. Employees have realistic and varied data.
+## Security Review
 
-9. Salary records exist for employees.
+Pay special attention to:
 
-10. Seed data is deterministic.
+- passwords are never stored or logged in plaintext
+- passwords are securely verified against the stored hash
+- JWT secrets come from environment variables
+- JWT secrets are not committed to Git
+- access tokens have appropriate expiration
+- refresh tokens have appropriate expiration
+- refresh tokens cannot be reused after revocation/rotation if rotation is part of the approved design
+- invalid tokens are rejected
+- expired tokens are rejected
+- malformed authorization headers are rejected
+- authentication errors do not leak sensitive information
+- database queries are parameterized
+- user input is validated
+- sensitive credentials are not exposed in API responses or logs
 
-11. HR manager password is securely hashed.
+## API Review
 
-12. No secrets or passwords are committed or logged.
+Verify the authentication endpoints against docs/architecture.md.
 
-13. Database migrations are reproducible.
+Check:
 
-14. RLS/security configuration is appropriate for our architecture:
-    React → Express → pg → Supabase PostgreSQL.
+- endpoint paths
+- HTTP methods
+- request body validation
+- response structure
+- status codes
+- authentication requirements
+- error responses
 
-15. RLS policies do not accidentally expose employee or salary data publicly.
+Do not invent requirements that are not present in the approved architecture.
 
-16. Supabase Data API is not being used by the frontend.
+## Database Review
 
-17. Tests, lint and typecheck pass.
+Verify that the existing:
 
-18. No Phase 2+ functionality was implemented prematurely.
+- users
+- refresh_tokens
 
-Do NOT modify any files or database objects.
+tables are used correctly.
 
-Return exactly:
+Check:
+
+- foreign keys
+- token persistence
+- token expiration
+- token revocation
+- indexes
+- transactions where required
+- no unnecessary schema changes
+
+## Tests
+
+Verify meaningful tests exist for:
+
+- successful login
+- invalid email/user
+- invalid password
+- missing credentials
+- malformed credentials
+- protected endpoint without token
+- protected endpoint with valid token
+- invalid access token
+- expired access token
+- refresh token flow
+- invalid refresh token
+- revoked refresh token
+- token expiration/revocation behavior
+
+Tests must be:
+
+- deterministic
+- isolated
+- easy to understand
+- fast
+
+Run:
+
+npm test
+
+npm run lint
+
+npm run typecheck
+
+## Code Quality
+
+Review:
+
+- separation of routes/controllers/services
+- reusable authentication middleware
+- error handling
+- TypeScript quality
+- naming
+- maintainability
+- unnecessary complexity
+- duplication
+- logging
+- configuration management
+
+Do not approve simply because the tests pass.
+
+Check whether the implementation actually follows the approved architecture.
+
+## Git Review
+
+Inspect the current Git diff.
+
+Make sure:
+
+- only Phase 2 changes are present
+- no secrets are committed
+- no .env file is committed
+- no unrelated files were modified
+- no unnecessary dependencies were added
+
+## Final Decision
+
+Return exactly one of:
 
 APPROVED
 
@@ -71,9 +180,13 @@ or
 
 CHANGES REQUESTED
 
-For every requested change, provide:
+If CHANGES REQUESTED, provide each issue using:
 
-- priority
-- problem
-- why it matters
-- recommended fix.
+Priority:
+Problem:
+Why it matters:
+Recommended fix:
+
+Do NOT modify any files.
+
+At the end provide a concise review summary.
